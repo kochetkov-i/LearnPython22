@@ -1,4 +1,4 @@
-import logging, json, os, base64
+import logging, json, os
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 
@@ -10,15 +10,11 @@ path_config_file = os.path.join(path_current_directory, "config.json")
 with open(path_config_file, 'r') as f:
     config = json.load(f)
 
-
-def decode64(decode_str):
-    return base64.b64decode(decode_str).decode('utf-8')
-
-
-PROXY = {'proxy_url': decode64(config["Proxy"]["url"]),
+API_KEY = config["ApiKey"]
+PROXY = {'proxy_url': (config["Proxy"]["url"]),
     'urllib3_proxy_kwargs': {
-        'username': decode64(config["Proxy"]["username"]), 
-        'password': decode64(config["Proxy"]["password"])}}
+        'username': config["Proxy"]["username"], 
+        'password': config["Proxy"]["password"]}}
 
 
 def greet_user(update, context):
@@ -33,7 +29,7 @@ def talk_to_me(update, context):
 
 
 def main():
-    mybot = Updater(decode64(config["ApiKey"]), request_kwargs=PROXY)
+    mybot = Updater(API_KEY, request_kwargs=PROXY)
 
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))

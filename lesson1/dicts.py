@@ -33,7 +33,7 @@ print(f"product: {product}")
 
 try:
     del product["stock"]
-except Exception as e:
+except KeyError as e:
     print(f"{e} - {e.__doc__}")
 
 phones = ["Samsung Galaxy S21", "iPhone 12"]

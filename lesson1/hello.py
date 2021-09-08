@@ -5,8 +5,8 @@ x = 2
 y = 10
 z = 3
 #let's some output
-print(f"2 + 2 = {x+x}")
-print(f"10 / 3 = {y/z}")
+print(f"{x} + {x} = {x+x}")
+print(f"{y} / {z} = {y/z}")
 
 def compare_val(a, b):
     print(f"is X = {a} bigger then Y = {b} - {a > b}")
