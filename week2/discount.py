@@ -3,12 +3,16 @@ def discounted(price, discount, max_discount=20):
         price = float(price)
         discount = float(discount)
         max_discount = int(max_discount)
-    except ValueError as error:
+    except ValueError:
         print("Value error in convert input params")
-    except TypeError as error:
+        exit()
+    except TypeError:
         print("Type error in convert input params")
+        exit()
+
     if max_discount >= 100:
-        raise ValueError('Слишком большая максимальная скидка')
+        print("Слишком большая максимальная скидка")
+        exit()
     if discount >= max_discount:
         return price
     else:
