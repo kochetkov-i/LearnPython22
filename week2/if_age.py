@@ -1,15 +1,20 @@
-user_age = int(input("How old are you?: "))
+try:
+    user_age = int(input("How old are you?: "))
+except ValueError:
+    print("Value error, try use integer next time")
+    exit()
 
-def action_by_age(age):
+def get_action_by_age(age):
+    answer = "You are too small for our actions"
     if age > 22:
-        return "Your action is work"
+        answer = "Your action is work"
     elif 22 >= age > 16:
-        return "You are a student"
+        answer = "You are a student"
     elif 16 >= age > 6:
-        return "You are a schoolboy"
+        answer = "You are a schoolboy"
     elif 6 >= age > 3:
-        return "You goes to kindergarten"
-    return "You are too small for our actions"
+        answer = "You goes to kindergarten"
+    return answer
 
-user_action = action_by_age(user_age)
+user_action = get_action_by_age(user_age)
 print(user_action)
