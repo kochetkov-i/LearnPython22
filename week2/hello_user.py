@@ -1,6 +1,13 @@
 def hello_user():
     while True:
-        user_say = input("How are you: ")
+        try:
+            user_say = str(input("How are you: "))
+        except KeyboardInterrupt: 
+            print("Bye!")
+            break
+        except ValueError:
+            print("Input value error! Try again")
+            continue
         if user_say == "Good":
             break
 
