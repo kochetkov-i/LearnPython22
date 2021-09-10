@@ -1,12 +1,15 @@
 import random
 
 
-int_counts = random.sample(range(0,99),10)
+int_numbers = random.sample(range(0,99), 10)
 
-for count in int_counts:
-    print(count +1)
+for number in int_numbers:
+    print(number +1)
 
-user_string = str(input("Input string: "))
+try:
+    user_string = str(input("Input string: "))
+except ValueError: print("You have mistake in input")
+except TypeError: print("You have mistake in input")
 
 for char in user_string:
     print(char)

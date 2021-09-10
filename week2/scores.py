@@ -1,4 +1,4 @@
-list_scores = [
+classes_info = [
     {'school_class': '4a', 'scores': [3,4,4,5,2,5,3,5]}, 
     {'school_class': '4b', 'scores': [3,4,4,5,2]}, 
     {'school_class': '5a', 'scores': [3,4,4,5,2]}, 
@@ -9,12 +9,12 @@ list_scores = [
 
 all_scores = []
 
-for class_score in list_scores:
-    avg_class = sum(class_score["scores"]) / len(class_score["scores"])
-    output_avg_class = f"AVG {class_score['school_class']} class value is {avg_class}"
+for class_info in classes_info:
+    avg_class = sum(class_info["scores"]) / len(class_info["scores"])
+    output_avg_class = f"AVG {class_info['school_class']} class value is {avg_class}"
     print(output_avg_class)
-    all_scores.extend(class_score["scores"])
+    all_scores.extend(class_info["scores"])
 
-avg_scores = sum(all_scores) / len(all_scores)
-output_avg_all = f"AVG all classes value is {avg_scores}"
+avg_class_score = sum(all_scores) / len(all_scores)
+output_avg_all = f"AVG all classes value is {avg_class_score}"
 print(output_avg_all)
