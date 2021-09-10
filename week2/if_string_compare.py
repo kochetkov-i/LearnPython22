@@ -7,7 +7,9 @@ def string_compare(string_first, string_second):
         return 2
     elif "learn" == string_second:
         return 3
-    print("Something wrong")
     return 99
 
-print(string_compare("learn","learn"))
+int_compare = string_compare("learn","learn")
+if(int_compare == 99): 
+    print("Something wrong")
+print(int_compare)
