@@ -40,7 +40,7 @@ def get_clear_planet(update):
 def get_constellation_by_planet(update, context):
     logging.info("/planet command called")
     planet_name = get_clear_planet(update)
-    user_planet = getattr(ephem, planet_name)
+    user_planet = getattr(ephem, planet_name)()
     user_planet.compute(ephem.now())
     planet_constellation = ephem.constellation(user_planet)
     update.message.reply_text(planet_constellation)
