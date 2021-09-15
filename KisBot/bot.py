@@ -23,24 +23,24 @@ def greet_user(update, context):
     update.message.reply_text("Hi bro! You pressed /start, congratulation!")
 
 
-def get_clear_planet(update):
-    try:
-        user_text = update.message.text
-        user_words = user_text.split()
-        if len(user_words) != 2: raise ValueError
-        planet_name = user_words[-1].capitalize()
-        planet_list = [name for _0, _1, name in ephem._libastro.builtin_planets()]
-        if planet_name not in planet_list: raise ModuleNotFoundError
-        return planet_name
-    except ValueError: update.message.reply_text("Try again bro - your string is wrong")
-    except ModuleNotFoundError: update.message.reply_text("Planet not found in lib")
-    
+def get_planet_name_from_user_input(update):
+    user_text = update.message.text
+    user_words = user_text.split()
+    if len(user_words) != 2: 
+        return None
+    planet_name = user_words[-1].capitalize()
+    return planet_name
 
 
 def get_constellation_by_planet(update, context):
     logging.info("/planet command called")
-    planet_name = get_clear_planet(update)
-    user_planet = getattr(ephem, planet_name)()
+    planet_name = get_planet_name_from_user_input(update)
+    if planet_name is None:
+        update.message.reply_text("Try again bro - your string is wrong")
+    try:
+        user_planet = getattr(ephem, planet_name)()
+    except AttributeError:
+        update.message.reply_text("Planet not found in lib")
     user_planet.compute(ephem.now())
     planet_constellation = ephem.constellation(user_planet)
     update.message.reply_text(planet_constellation)
