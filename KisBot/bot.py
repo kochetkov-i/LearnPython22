@@ -1,6 +1,7 @@
 import logging, json, os
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import ephem
+from datetime import datetime
 
 
 logging.basicConfig(filename="bot.log", level=logging.INFO)
@@ -52,12 +53,27 @@ def talk_to_me(update, context):
     update.message.reply_text(user_text)
 
 
+def next_full_moon(update, context):
+    user_text = update.message.text.split()[-1]
+    if not user_text:
+        update.message.reply_text("Try again bro - your string is empty")
+    try:
+        input_date = datetime.strptime(user_text, '%Y-%m-%d')
+    except ValueError:
+        update.message.reply_text("Try again bro - your date is not match YYYY-MM-DD")
+        return
+    next_full_moon = ephem.next_full_moon(input_date)
+    output_next_full_moon =f"Next full moon at: {next_full_moon}"
+    update.message.reply_text(output_next_full_moon)
+
+
 def main():
     mybot = Updater(API_KEY, request_kwargs=PROXY)
 
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(CommandHandler("planet", get_constellation_by_planet))
+    dp.add_handler(CommandHandler("next_full_moon", next_full_moon))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     logging.info("Bot started")
