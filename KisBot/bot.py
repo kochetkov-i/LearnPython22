@@ -1,6 +1,6 @@
 import logging, json, os
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import ephem
+import ephem, re
 
 
 logging.basicConfig(filename="bot.log", level=logging.INFO)
@@ -52,12 +52,27 @@ def talk_to_me(update, context):
     update.message.reply_text(user_text)
 
 
+def word_count(update, context):
+    user_text_with_command = update.message.text
+    user_text = user_text_with_command.replace('/wordcount', '').strip()
+    if user_text is None or user_text == '':
+        update.message.reply_text("Try again bro - your string is wrong")
+    else:
+        user_words = re.split(r'[;,.:)(!?\s]', user_text)
+        word_count = len(user_words)
+        for word in user_words:
+            if re.match(r'^([\s\d]+)$', word):
+                word_count -= 1
+        output_word_count = f"Count of words in your input is: {word_count}"
+        update.message.reply_text(output_word_count)
+
 def main():
     mybot = Updater(API_KEY, request_kwargs=PROXY)
 
     dp = mybot.dispatcher
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(CommandHandler("planet", get_constellation_by_planet))
+    dp.add_handler(CommandHandler("wordcount", word_count))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     logging.info("Bot started")
