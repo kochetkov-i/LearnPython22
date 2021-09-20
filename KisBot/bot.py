@@ -1,6 +1,7 @@
 import logging, json, os
+from typing import Type
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import ephem, re
+import ephem, re, string
 
 
 logging.basicConfig(filename="bot.log", level=logging.INFO)
@@ -53,15 +54,16 @@ def talk_to_me(update, context):
 
 
 def word_count(update, context):
-    user_text_with_command = update.message.text
-    user_text = user_text_with_command.replace('/wordcount', '').strip()
-    if user_text is None or user_text == '':
-        update.message.reply_text("Try again bro - your string is wrong")
+    user_text = update.message.text.replace('/wordcount', '')
+    if not user_text:
+        update.message.reply_text("Try again bro - your string is empty")
     else:
-        user_words = re.split(r'[;,.:)(!?\s]', user_text)
+        for separator in string.punctuation:
+            user_text = user_text.replace(separator, ' ')
+        user_words = user_text.split()
         word_count = len(user_words)
         for word in user_words:
-            if re.match(r'^([\s\d]+)$', word):
+            if word.isnumeric():
                 word_count -= 1
         output_word_count = f"Count of words in your input is: {word_count}"
         update.message.reply_text(output_word_count)
