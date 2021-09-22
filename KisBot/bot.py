@@ -82,14 +82,83 @@ def word_count(update, context):
         update.message.reply_text(output_word_count)
 
 
+def get_answer(cities, last_char):
+    for city in cities:
+        if city[0] == last_char:
+            return city
+    return
+
+
+def check_user_city(user_data, user_city):
+    last_char = user_data['last_char']
+    if not last_char:
+        return True
+    if user_city[0] == last_char and get_answer(user_data['cities'], last_char):
+        return True
+    return False
+
+
+def init_game_city(context):
+    context.user_data['cities'] = context.bot_data['cities']
+    context.user_data['used_cities'] = []
+    context.user_data['last_char'] = ''
+
+
+def processing_game_step(context, city):
+        context.user_data['used_cities'].append(city)
+        context.user_data['cities'].remove(city)
+        context.user_data['last_char'] = city[-1].upper()
+
+
+def cities(update, context):
+    user_text = update.message.text.replace('/cities', '').strip()
+    user_text = user_text.capitalize()
+
+    if not user_text:
+        update.message.reply_text("Try again bro - your string is empty")
+        return
+    
+    if 'cities' not in context.user_data:
+        init_game_city(context)
+
+    if len(context.user_data['cities']) == 0:
+        update.message.reply_text("Sorry bro - game is restarted")
+        init_game_city(context)
+
+    if user_text in context.user_data['used_cities']:
+        update.message.reply_text("Try again bro - this city is already used")
+        return
+    
+    if user_text not in context.user_data['cities']:
+        update.message.reply_text("Try again bro - I don't know this city")
+        return
+    
+    if not check_user_city(context.user_data, user_text):
+        update.message.reply_text("Try again bro - you lose")
+        init_game_city(context)
+        return
+
+    processing_game_step(context, user_text)
+    bot_answer = get_answer(context.user_data['cities'], context.user_data['last_char'])
+
+    if not bot_answer:
+        update.message.reply_text("Congratulations bro - you won")
+        return
+
+    processing_game_step(context, bot_answer)
+    update.message.reply_text(bot_answer)
+    
+
 def main():
     mybot = Updater(API_KEY, request_kwargs=PROXY)
 
     dp = mybot.dispatcher
+    dp.bot_data['cities'] = ['Москва', 'Арзамас', 'Самара', 'Архангельск']
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(CommandHandler("planet", get_constellation_by_planet))
     dp.add_handler(CommandHandler("next_full_moon", next_full_moon))
     dp.add_handler(CommandHandler("wordcount", word_count))
+    dp.add_handler(CommandHandler("cities", cities))
     dp.add_handler(MessageHandler(Filters.text, talk_to_me))
 
     logging.info("Bot started")
